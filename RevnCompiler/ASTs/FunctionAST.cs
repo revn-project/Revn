@@ -25,6 +25,7 @@ namespace RevnCompiler.ASTs
 	internal class FunctionAST : ASTBase
 	{
         internal FunctionPrototype Prototype;
+        internal List<VariableExpressionAST> Variables = new List<VariableExpressionAST>();
 		internal List<ExpressionAST> Expressions;
 
 		public override string GenerateIL()
@@ -42,12 +43,21 @@ namespace RevnCompiler.ASTs
 				body += expression.GenerateIL();
 			}
 
+            string variableString = string.Empty;
+            foreach(var variable in Variables)
+            {
+                variableString += $"[{variable.Index}] {variable.ReturnType} {variable.Name}\n";
+            }
+
 			return
-				$".method {Prototype.Modifier.Accessibility.ToString().ToLower()} hidebysig {Prototype.Modifier.Static} void\n" +
+                $".method {Prototype.Modifier.Accessibility.ToString().ToLower()} hidebysig {Prototype.Modifier.Static} void\n" +
 					$"{Prototype.FunctionName}(\n" +
 						argsCode +
 					") cil managed\n" +
 				"{\n" +
+                    ".locals init(\n" +
+                        variableString +
+                    ")" +
                     Prototype.entryPoint +
 					body +
                     "ret\n" + // TODO fix!!

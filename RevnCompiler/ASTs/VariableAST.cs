@@ -3,19 +3,16 @@ namespace RevnCompiler.ASTs
 {
     internal class VariableExpressionAST : ExpressionAST
     {
-        internal string Name { get; }
-        internal int Index { get; }
-
-        internal VariableExpressionAST(string type, string name, int index)
-        {
-            this.ReturnType = type;
-            this.Name = name;
-            this.Index = index;
-        }
+        internal string Name { get; set; }
+        internal int Index { get; set; }
+        internal bool IsMutable { get; set; }
+        internal bool IsToSet { get; set; }
 
         public override string GenerateIL()
         {
-            return $"ldloc.{Index} //{Name} \n";
+            return IsToSet
+                ? $"stloc.{Index} //{Name}\n"
+                : $"ldloc.{Index} //{Name}\n";
         }
     }
 }

@@ -25,10 +25,7 @@ namespace RevnCompiler
             tokenReader = new TokenReader(tokens);
 
             modifierGenerator = new ModifierGenerator(this);
-            functionAstGenerator = 
-                new FunctionASTGenerator(this,
-                                         modifierGenerator,
-                                         new ExpressionASTGenerator(this));
+            functionAstGenerator = new FunctionASTGenerator(this, modifierGenerator);
         }
 
         public IEnumerable<ASTBase> Parse()

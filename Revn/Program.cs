@@ -13,7 +13,9 @@ namespace Revn
                 "namespace Revn:\n" +
                     "class Program:\n" +
                         "public static fun Main(args : String[]):\n" +
+                            "val x = 10" +
                             "Console.WriteLine(\"Hello World!\")" +
+                            "Console.WriteLine(x)"+
                             "Console.ReadLine()" +
                         "end\n" +
                     "end\n" +
@@ -30,8 +32,6 @@ namespace Revn
             {
                 Console.WriteLine(res.GenerateIL());
             }
-
-            AssemblyName[] names = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
         }
     }
 }

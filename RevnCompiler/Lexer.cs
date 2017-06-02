@@ -80,16 +80,37 @@ namespace RevnCompiler
                         return new Token(TokenType.Static, tokenString, lineNumber);
                     case "fun":
                         return new Token(TokenType.Fun, tokenString, lineNumber);
+                    case "val":
+                        return new Token(TokenType.Val, "val", lineNumber);
+					case "var":
+						return new Token(TokenType.Var, "var", lineNumber);
                     default:
                         return new Token(TokenType.Identifier, tokenString, lineNumber);
                 }
+            }
+
+            if (char.IsNumber(LastChar))
+            {
+                string tokenString = LastChar.ToString();
+                bool isFloat = false;
+                while (char.IsNumber(LastChar = Reader.GetNext()) || LastChar == '.')
+                {
+                    if (LastChar == '.') 
+                    {
+                        if (isFloat) throw new Exception("Another deciaml.");
+                        isFloat = true;
+                    }
+                    tokenString += LastChar.ToString();
+                }
+                return new Token(isFloat ? TokenType.FloatingPoint : TokenType.Integer,
+                                 tokenString, lineNumber);
             }
 
             switch(LastChar)
             {
                 case ':':
 	                LastChar = Reader.GetNext(); // : を消費
-	                return new Token(TokenType.BlockStart, ":", lineNumber);
+	                return new Token(TokenType.BlockStartOrColon, ":", lineNumber);
                 case '(':
                     LastChar = Reader.GetNext(); // ( を消費
                     return new Token(TokenType.LParen, "(", lineNumber);
@@ -111,6 +132,9 @@ namespace RevnCompiler
                 case ',':
                     LastChar = Reader.GetNext(); // , を消費
                     return new Token(TokenType.Comma, ",", lineNumber);
+                case '=':
+					LastChar = Reader.GetNext(); // , を消費
+                    return new Token(TokenType.Equals, "=", lineNumber);
             }
 
             // 終了

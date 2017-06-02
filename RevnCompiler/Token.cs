@@ -4,6 +4,8 @@ namespace RevnCompiler
 	public enum TokenType
 	{
 		Identifier,
+        Integer,
+        FloatingPoint,
 		Predefined,
 
         Using,
@@ -14,10 +16,14 @@ namespace RevnCompiler
         RParen,
         LBracket,
         RBracket,
-        BlockStart,
+        BlockStartOrColon,
         BlockEnd,
         Period,
         Comma,
+        Equals,
+
+        Val,
+        Var,
 
         Accessibility,
 

@@ -1,7 +1,7 @@
 ﻿using System;
 namespace RevnCompiler.ParserHelpers
 {
-    public interface IExpressionASTGenerator
+    internal interface IExpressionASTGenerator
     {
         ExpressionAST GenerateExpressionAST();
     }
