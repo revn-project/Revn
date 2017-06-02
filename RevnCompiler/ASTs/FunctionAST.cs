@@ -2,19 +2,35 @@
 
 namespace RevnCompiler.ASTs
 {
+    internal class FunctionPrototype
+    {
+        private string functionName;
+        internal string FunctionName
+        {
+            get { return functionName; }
+            set 
+            {
+                functionName = value;
+                if (value != "Main") return;
+                entryPoint = ".entrypoint\n";
+            }
+        }
+        internal string FullClassName;
+        internal GenericModifier Modifier;
+		internal string ReturnType = "void";
+		internal List<Argument> args;
+        internal string entryPoint;
+    }
+
 	internal class FunctionAST : ASTBase
 	{
-		internal string FunctionName;
-		internal Accessibility Accessibility;
-		internal string Static = string.Empty;
-		internal string returnValue = "void";
-		internal List<Argument> args;
+        internal FunctionPrototype Prototype;
 		internal List<ExpressionAST> Expressions;
 
 		public override string GenerateIL()
 		{
 			string argsCode = string.Empty;
-			foreach (var arg in args)
+			foreach (var arg in Prototype.args)
 			{
 				argsCode += $"{arg.Type} {arg.Name},\n";
 			}
@@ -27,12 +43,14 @@ namespace RevnCompiler.ASTs
 			}
 
 			return
-				$".method {Accessibility.ToString().ToLower()} hidebysig {Static} void\n" +
-					$"{FunctionName}(\n" +
+				$".method {Prototype.Modifier.Accessibility.ToString().ToLower()} hidebysig {Prototype.Modifier.Static} void\n" +
+					$"{Prototype.FunctionName}(\n" +
 						argsCode +
 					") cil managed\n" +
 				"{\n" +
+                    Prototype.entryPoint +
 					body +
+                    "ret\n" + // TODO fix!!
 				"}\n";
 		}
 	}

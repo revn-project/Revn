@@ -18,6 +18,7 @@ namespace RevnCompiler
 
         internal Token GetNext()
         {
+            if (currentIndex >= Tokens.Count()) return null;
             return Tokens[currentIndex++];
         }
 
@@ -49,5 +50,19 @@ namespace RevnCompiler
 
 			return tokens;
         }
+
+        internal List<Token> GetUntil(TokenType tokenType)
+        {
+            var tokens = new List<Token>();
+
+            Token token;
+            while((token = Tokens[currentIndex++]).TokenType != tokenType)
+            {
+                tokens.Add(token);
+            }
+
+            return tokens;
+        }
+
     }
 }

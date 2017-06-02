@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using RevnCompiler;
 
 namespace Revn
@@ -13,6 +14,7 @@ namespace Revn
                     "class Program:\n" +
                         "public static fun Main(args : String[]):\n" +
                             "Console.WriteLine(\"Hello World!\")" +
+                            "Console.ReadLine()" +
                         "end\n" +
                     "end\n" +
                 "end");
@@ -22,6 +24,14 @@ namespace Revn
                 Console.WriteLine($"{token.TokenType} : {token.Value}");
             }
 
+            Parser parser = new Parser(tokens);
+            var result = parser.Parse();
+            foreach(var res in result)
+            {
+                Console.WriteLine(res.GenerateIL());
+            }
+
+            AssemblyName[] names = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
         }
     }
 }

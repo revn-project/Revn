@@ -3,39 +3,42 @@ using System.Collections.Generic;
 
 namespace RevnCompiler
 {
-	interface ILGenerator
-	{
-		string GenerateIL();
-	}
+    interface ILGenerator
+    {
+        string GenerateIL();
+    }
 
     public abstract class ASTBase : ILGenerator
     {
-        public virtual string GenerateIL()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract string GenerateIL();
     }
 
-    public class ExpressionAST : ASTBase
-	{
-        public override string GenerateIL()
-		{
-			throw new NotImplementedException();
-		}
-	}
-
-    internal enum Accessibility
+    public abstract class ExpressionAST : ASTBase
     {
-        Public,
-        Private,
-        Internal,
-        Protected
+        internal bool IsReturnValueUsed = false;
+        internal string ReturnType;
     }
 
     internal class Argument
     {
         internal string Type;
         internal string Name;
+    }
+
+    internal class StringLiteralAST : ExpressionAST
+    {
+        private string stringLiteral;
+
+        internal StringLiteralAST(string str)
+        {
+            stringLiteral = str;
+            ReturnType = "string";
+        }
+
+        public override string GenerateIL()
+        {
+            return $"ldstr \"{stringLiteral}\"\n";
+        }
     }
 
 }

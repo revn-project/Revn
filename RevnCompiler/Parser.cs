@@ -1,104 +1,120 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using RevnCompiler.ASTs;
+using RevnCompiler.ParserHelpers;
 
 namespace RevnCompiler
 {
     public class Parser
     {
-        TokenReader Reader { get; }
+        TokenReader tokenReader { get; }
 
         Token lastToken;
+        public Token LastToken { get => lastToken; }
 
         string currentNamespace = string.Empty;
         List<string> usings = new List<string>();
 
+        // helpers
+        readonly IModifierGenerator modifierGenerator;
+        readonly IFunctionASTGenerator functionAstGenerator;
+
         public Parser(IEnumerable<Token> tokens)
         {
-            Reader = new TokenReader(tokens);
+            tokenReader = new TokenReader(tokens);
+
+            modifierGenerator = new ModifierGenerator(this);
+            functionAstGenerator = 
+                new FunctionASTGenerator(this,
+                                         modifierGenerator,
+                                         new ExpressionASTGenerator(this));
         }
 
         public IEnumerable<ASTBase> Parse()
         {
             var asts = new List<ASTBase>();
 
-            while(Reader.HasNext)
+            while(tokenReader.HasNext)
             {
-                lastToken = Reader.GetNext();
+                ProceedToken();
+
                 switch(lastToken.TokenType)
                 {
 					case TokenType.Using:
-                        lastToken = Reader.GetNext(); // using を消費
+                        ProceedToken(); // using をスキップ
                         usings.Add(lastToken.Value);
-						break;
+                        continue;
 					case TokenType.Namespace:
-                        lastToken = Reader.GetNext(); // namespace を消費
+                        ProceedToken(); // namespace をスキップ
 						currentNamespace = lastToken.Value;
-						break;
-                    case TokenType.Class:
-                        lastToken = Reader.GetNext(); // class を消費
-                        asts.Add(GenerateClassAST());
-                        break;
-                    case TokenType.Accessibility:
-                        Accessibility accessibility;
-                        switch(lastToken.Value)
-                        {
-                            case "private"  : accessibility = Accessibility.Private;    break;
-                            case "public"   : accessibility = Accessibility.Public;     break;
-                            case "protected": accessibility = Accessibility.Protected;  break;
-                            case "internal" : accessibility = Accessibility.Internal;   break;
-                            default: throw new NotImplementedException();
-                        }
-
-                        var nextToken = Reader.Peek();
-                        switch(nextToken.TokenType)
-                        {
-                            case TokenType.Class:
-                                asts.Add(GenerateClassAST(accessibility));
-                                break;
-                            default:
-                                throw new NotImplementedException();
-                        }
-                        break;
-					default:
-						throw new NotImplementedException();
+                        ProceedToken(); // : を消費すように一個ずらす
+                        continue;
                 }
+
+                var modifier = modifierGenerator.GenerateModifier();
+                var prototype = GenerateClassPrototype(modifier);
+                var classAst = GenerateClassAST(prototype);
+
+                asts.Add(classAst);
+
+                if (LastToken.TokenType == TokenType.BlockEnd) break;
             }
 
 
             return asts;
         }
 
-        private ClassAST GenerateClassAST(Accessibility accessibility = Accessibility.Public)
+        internal Token ProceedToken()
+		{
+			lastToken = tokenReader.GetNext();
+			return lastToken;
+		}
+
+        #region Class Prototype
+
+        private ClassPrototypeAST GenerateClassPrototype(GenericModifier modifier)
         {
-            var classAst = new ClassAST();
-            classAst.Accessibility = accessibility;
-            classAst.ClassName = lastToken.Value;
+			var prototype = new ClassPrototypeAST();
 
-            lastToken = Reader.GetNext(); // クラス名を消費
-            // TODO: inheritence
+			prototype.Modifier = modifier;
+			prototype.Namespace = currentNamespace;
 
-            lastToken = Reader.GetNext(); // : を消費
+            ProceedToken(); // class を消費
+
+			prototype.ClassName = lastToken.Value;
+			ProceedToken(); // クラス名を消費
+
+            // TODO inheritence
+
+            ProceedToken(); // :を消費
+
+			return prototype;
+		}
+
+        #endregion
+
+        internal ClassAST GenerateClassAST(ClassPrototypeAST prototype)
+		{
+			var classAst = new ClassAST();
+			classAst.prototype = prototype;
 
             // 関数系をパース
-            var functions = new List<FunctionAST>();
-            while(lastToken.TokenType != TokenType.BlockEnd)
-            {
-                functions.Add(GenerateFunctionAST());
-            }
-            classAst.Functions = functions;
+			var functions = new List<FunctionAST>();
+			while (lastToken.TokenType != TokenType.BlockEnd)
+			{
+				functions.Add(functionAstGenerator.GenerateFunctionAST());
+			}
+			classAst.Functions = functions;
 
-            return classAst;
-        }
+			return classAst;
+		}
 
-        private FunctionAST GenerateFunctionAST()
-        {
-            var functionAst = new FunctionAST();
+		private ExpressionAST GenerateExpressionAST()
+		{
+			throw new NotImplementedException();
+		}
 
-
-
-            return functionAst;
-        }
 
     }
 

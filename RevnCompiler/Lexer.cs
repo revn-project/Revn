@@ -108,6 +108,9 @@ namespace RevnCompiler
                 case '"':
                     LastChar = Reader.GetNext(); // " を消費
                     return GenerateStringToken();
+                case ',':
+                    LastChar = Reader.GetNext(); // , を消費
+                    return new Token(TokenType.Comma, ",", lineNumber);
             }
 
             // 終了
