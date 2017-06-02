@@ -5,11 +5,11 @@ namespace RevnCompiler
     {
         string Input { get; }
         char currentChar = ' ';
-        int currentIndex = 0;
+        int currentIndex;
 
-		internal char CurrentChar { get { return currentChar; } }
-        internal int CurrentIndex{ get { return currentIndex; }}
-        internal bool HasNext { get { return currentIndex < Input.Length; }}
+		internal char CurrentChar => currentChar;
+        internal int CurrentIndex => currentIndex;
+        internal bool HasNext => currentIndex < Input.Length;
 
         private int localIndex = 0;
         internal int LocalIndex { get; }

@@ -10,11 +10,11 @@ namespace RevnCompiler
         string SourceCode { get; }
         CharReader Reader { get; }
 
-        int lineNumber = 0;
+        int lineNumber;
         char lastChar = ' ';
         char LastChar
         {
-            get { return lastChar; }
+            get => lastChar;
             set
             {
                 lastChar = value;

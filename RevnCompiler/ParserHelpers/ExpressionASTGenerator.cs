@@ -17,11 +17,8 @@ namespace RevnCompiler.ParserHelpers
         };
         private readonly Parser parser;
         private readonly FunctionASTGenerator functionGenerator;
-        private int _localVariableIndex = 0;
-        private int localVariableIndex 
-        {
-            get { return _localVariableIndex++; }
-        }
+        private int localVariableIndex;
+        private int LocalVariableIndex => localVariableIndex++;
 
         internal ExpressionASTGenerator(Parser parser, FunctionASTGenerator functionGenerator)
         {
@@ -93,9 +90,11 @@ namespace RevnCompiler.ParserHelpers
 
             parser.ProceedToken(); // = を消費
 
-            var assignment = new AssignmentAST();
-            assignment.LHS = variable;
-            assignment.RHS = GenerateExpressionAST();
+            var assignment = new AssignmentAST
+            {
+                LHS = variable,
+                RHS = GenerateExpressionAST()
+            };
 
             if(variable.ReturnType == null)
             {
@@ -125,18 +124,18 @@ namespace RevnCompiler.ParserHelpers
 
             if(parser.LastToken.TokenType != TokenType.LParen)
             {
-                if (!functionGenerator.HasLocalVariable(parser.LastToken.Value))
+                if (!functionGenerator.HasLocalVariable(identifier))
                 {
 					// TODO Parser exception
 					throw new Exception("Variable is not assigned.");
                 }
 
-                string type = functionGenerator.GetVariable(parser.LastToken.Value).ReturnType;
+                string type = functionGenerator.GetVariable(identifier).ReturnType;
 
                 var variable = new VariableExpressionAST();
                 variable.ReturnType = type;
-                variable.Name = parser.LastToken.Value;
-                variable.Index = localVariableIndex;
+                variable.Name = identifier;
+                variable.Index = LocalVariableIndex;
                 return variable;
             }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using RevnCompiler;
 
@@ -8,18 +9,9 @@ namespace Revn
     {
         static void Main(string[] args)
         {
-            var lexer = new Lexer(
-                "using System\n" + 
-                "namespace Revn:\n" +
-                    "class Program:\n" +
-                        "public static fun Main(args : String[]):\n" +
-                            "val x = 10" +
-                            "Console.WriteLine(\"Hello World!\")" +
-                            "Console.WriteLine(x)"+
-                            "Console.ReadLine()" +
-                        "end\n" +
-                    "end\n" +
-                "end");
+            var program =
+                File.ReadAllText( @"C:\Users\ichi-dohi\Documents\Visual Studio 2015\Projects\Revn\Revn\HelloWorld.rv" );
+            var lexer = new Lexer(program);
             var tokens = lexer.GenerateTokens();
             foreach(var token in tokens)
             {
@@ -28,9 +20,16 @@ namespace Revn
 
             Parser parser = new Parser(tokens);
             var result = parser.Parse();
-            foreach(var res in result)
+            FileStream file = File.Create(@"C:\Users\ichi-dohi\Desktop\hoge.il");
+            using ( var writer = new StreamWriter( file ) )
             {
-                Console.WriteLine(res.GenerateIL());
+                writer.WriteLine(".assembly extern mscorlib { }\n.assembly test { }");
+                foreach ( var astBase in result )
+                {
+                    var IL = astBase.GenerateIL();
+                    Console.WriteLine(IL);
+                    writer.WriteLine(IL);
+                }
             }
         }
     }
