@@ -6,7 +6,7 @@ namespace RevnCompiler
 {
     public class Lexer
     {
-        string SourceCode { get; }
+        private readonly string _sourceCode;
         CharReader Reader { get; }
 
         private static readonly string[] operands = {"+", "-", "*", "/"};
@@ -29,8 +29,8 @@ namespace RevnCompiler
 
         public Lexer(string sourceCode)
         {
-            SourceCode = sourceCode;
-            Reader = new CharReader(SourceCode);
+            _sourceCode = sourceCode;
+            Reader = new CharReader(_sourceCode);
         }
 
         public IEnumerable<Token> GenerateTokens()

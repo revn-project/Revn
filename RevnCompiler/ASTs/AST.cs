@@ -1,6 +1,6 @@
 ﻿namespace RevnCompiler
 {
-    interface ILGenerator
+    internal interface ILGenerator
     {
         string GenerateIL();
     }

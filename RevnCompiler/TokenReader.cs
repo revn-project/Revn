@@ -6,19 +6,19 @@ namespace RevnCompiler
     internal class TokenReader
     {
         private List<Token> Tokens { get; }
-        private int currentIndex = 0;
+        private int _currentIndex;
 
-        internal bool HasNext { get { return currentIndex < Tokens.Count(); }}
+        // todo: use count property
+        internal bool HasNext => _currentIndex < this.Tokens.Count();
 
         internal TokenReader(IEnumerable<Token> tokens)
         {
-            Tokens = tokens.ToList();
+            this.Tokens = tokens.ToList();
         }
 
         internal Token GetNext()
         {
-            if (currentIndex >= Tokens.Count()) return null;
-            return Tokens[currentIndex++];
+            return _currentIndex >= this.Tokens.Count() ? null : this.Tokens[_currentIndex++];
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace RevnCompiler
         /// <param name="count">何個先を見るか。省略すると次が見れます。</param>
         internal Token Peek(int count = 1)
         {
-            return Tokens[currentIndex + count];
+            return this.Tokens[_currentIndex + count];
         }
 
         /// <summary>
@@ -42,9 +42,9 @@ namespace RevnCompiler
         {
             var tokens = new List<Token>();
 
-            for (int i = 1; i <= count; i++)
+            for (var i = 1; i <= count; i++)
             {
-                tokens.Add(Tokens[currentIndex + i]);
+                tokens.Add(this.Tokens[_currentIndex + i]);
             }
 
             return tokens;
@@ -55,7 +55,7 @@ namespace RevnCompiler
             var tokens = new List<Token>();
 
             Token token;
-            while((token = Tokens[currentIndex++]).TokenType != tokenType)
+            while((token = this.Tokens[_currentIndex++]).TokenType != tokenType)
             {
                 tokens.Add(token);
             }

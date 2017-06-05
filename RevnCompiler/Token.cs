@@ -43,9 +43,9 @@
 
         internal Token(TokenType tokenType, string val, int lineNumber)
         {
-            TokenType = tokenType;
-            Value = val;
-            LineNumber = lineNumber;
+            this.TokenType = tokenType;
+            this.Value = val;
+            this.LineNumber = lineNumber;
         }
     }
 }
