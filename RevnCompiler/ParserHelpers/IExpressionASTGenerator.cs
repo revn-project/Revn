@@ -1,5 +1,4 @@
-﻿using System;
-namespace RevnCompiler.ParserHelpers
+﻿namespace RevnCompiler.ParserHelpers
 {
     internal interface IExpressionASTGenerator
     {

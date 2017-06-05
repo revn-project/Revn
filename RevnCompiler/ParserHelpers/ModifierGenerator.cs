@@ -1,5 +1,4 @@
-﻿using System;
-using RevnCompiler.ASTs;
+﻿using RevnCompiler.ASTs;
 using RevnCompiler.Utils;
 
 namespace RevnCompiler.ParserHelpers

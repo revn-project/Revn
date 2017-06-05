@@ -1,5 +1,4 @@
-﻿using System;
-namespace RevnCompiler.ASTs
+﻿namespace RevnCompiler.ASTs
 {
 	internal class IntegerLiteralAST : ExpressionAST
 	{

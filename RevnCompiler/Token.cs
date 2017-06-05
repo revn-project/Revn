@@ -1,5 +1,4 @@
-﻿using System;
-namespace RevnCompiler
+﻿namespace RevnCompiler
 {
 	public enum TokenType
 	{
