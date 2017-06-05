@@ -38,13 +38,13 @@ namespace RevnCompiler
 
                 switch(lastToken.TokenType)
                 {
-					case TokenType.Using:
+                    case TokenType.Using:
                         ProceedToken(); // using をスキップ
                         usings.Add(lastToken.Value);
                         continue;
-					case TokenType.Namespace:
+                    case TokenType.Namespace:
                         ProceedToken(); // namespace をスキップ
-						currentNamespace = lastToken.Value;
+                        currentNamespace = lastToken.Value;
                         ProceedToken(); // : を消費すように一個ずらす
                         continue;
                 }
@@ -58,59 +58,58 @@ namespace RevnCompiler
                 if (LastToken.TokenType == TokenType.BlockEnd) break;
             }
 
-
             return asts;
         }
 
         internal Token ProceedToken()
-		{
-			lastToken = tokenReader.GetNext();
-			return lastToken;
-		}
+        {
+            lastToken = tokenReader.GetNext();
+            return lastToken;
+        }
 
         #region Class Prototype
 
         private ClassPrototypeAST GenerateClassPrototype(GenericModifier modifier)
         {
-			var prototype = new ClassPrototypeAST();
+            var prototype = new ClassPrototypeAST();
 
-			prototype.Modifier = modifier;
-			prototype.Namespace = currentNamespace;
+            prototype.Modifier = modifier;
+            prototype.Namespace = currentNamespace;
 
             ProceedToken(); // class を消費
 
-			prototype.ClassName = lastToken.Value;
-			ProceedToken(); // クラス名を消費
+            prototype.ClassName = lastToken.Value;
+            ProceedToken(); // クラス名を消費
 
             // TODO inheritence
 
             ProceedToken(); // :を消費
 
-			return prototype;
-		}
+            return prototype;
+        }
 
         #endregion
 
         internal ClassAST GenerateClassAST(ClassPrototypeAST prototype)
-		{
-			var classAst = new ClassAST();
-			classAst.prototype = prototype;
+        {
+            var classAst = new ClassAST();
+            classAst.prototype = prototype;
 
             // 関数系をパース
-			var functions = new List<FunctionAST>();
-			while (lastToken.TokenType != TokenType.BlockEnd)
-			{
-				functions.Add(functionAstGenerator.GenerateFunctionAST());
-			}
-			classAst.Functions = functions;
+            var functions = new List<FunctionAST>();
+            while (lastToken.TokenType != TokenType.BlockEnd)
+            {
+                functions.Add(functionAstGenerator.GenerateFunctionAST());
+            }
+            classAst.Functions = functions;
 
-			return classAst;
-		}
+            return classAst;
+        }
 
-		private ExpressionAST GenerateExpressionAST()
-		{
-			throw new NotImplementedException();
-		}
+        private ExpressionAST GenerateExpressionAST()
+        {
+            throw new NotImplementedException();
+        }
 
 
     }
