@@ -15,14 +15,14 @@ namespace RevnCompiler.Utils
 
         public static Accessibility ConvertToAccessibility(this string s)
         {
-			switch (s)
-			{
-				case "private": return Accessibility.Private;
-				case "public": return Accessibility.Public;
-				case "protected": return Accessibility.Protected;
-				case "internal": return Accessibility.Internal;
-				default: throw new NotImplementedException();
-			}
+            switch (s)
+            {
+                case "private": return Accessibility.Private;
+                case "public": return Accessibility.Public;
+                case "protected": return Accessibility.Protected;
+                case "internal": return Accessibility.Internal;
+                default: throw new NotImplementedException();
+            }
         }
     }
 }

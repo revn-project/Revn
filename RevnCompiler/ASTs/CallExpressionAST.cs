@@ -32,8 +32,8 @@ namespace RevnCompiler.ASTs
             }
             if(args.Count > 0)
             {
-				// remove final ,
-				argLine = argLine.Substring(0, argLine.Length - 1);
+                // remove final ,
+                argLine = argLine.Substring(0, argLine.Length - 1);
             }
 
             var prototype = functionDefinitionFinder.Find(name);
@@ -59,34 +59,34 @@ namespace RevnCompiler.ASTs
 
                 // 関数名取得
                 var funcCallParts = functionCallIdentifier.Split('.');
-				var funcName = funcCallParts.Last();
+                var funcName = funcCallParts.Last();
                 prototype.FunctionName = funcName;
 
                 // クラス名取得
-				var fullClassName = string.Empty;
-				if (funcCallParts.Count() > 2)
-				{
-					// TODO namespace check
-					throw new NotImplementedException();
-				}
-				else
-				{
-					// TODO propperly look for class
-					switch (funcCallParts[0])
-					{
-						case "Console":
-							fullClassName += "[mscorlib]System." + funcCallParts[0];
-							break;
-						default: throw new NotImplementedException();
-					}
-				}
+                var fullClassName = string.Empty;
+                if (funcCallParts.Count() > 2)
+                {
+                    // TODO namespace check
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    // TODO propperly look for class
+                    switch (funcCallParts[0])
+                    {
+                        case "Console":
+                            fullClassName += "[mscorlib]System." + funcCallParts[0];
+                            break;
+                        default: throw new NotImplementedException();
+                    }
+                }
                 prototype.FullClassName = fullClassName;
 
-				// TODO properly find returnType
-				if (funcName == "ReadLine")
-				{
+                // TODO properly find returnType
+                if (funcName == "ReadLine")
+                {
                     prototype.ReturnType = "string";
-				}
+                }
 
                 return prototype;
             }

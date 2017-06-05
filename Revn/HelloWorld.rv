@@ -3,10 +3,10 @@
 namespace Revn:
     class Program:
         public static fun Main (args : String[]):
-			// Hogefugafuga
+            // Hogefugafuga
             val x = 10 + 30
-			val y = 20
-			Console.WriteLine(x + 30)
+            val y = 20
+            Console.WriteLine(x + 30)
         end
     end
 end

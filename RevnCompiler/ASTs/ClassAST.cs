@@ -4,23 +4,23 @@ namespace RevnCompiler.ASTs
 {
     public class ClassPrototypeAST
     {
-		internal string Namespace;
-		internal string ClassName;
-		private string inheritedClassName = string.Empty;
-		internal string InheritedClassName
-		{
-			get => string.IsNullOrWhiteSpace(inheritedClassName)
-						 ? "[mscorlib]System.Object"
-						 : inheritedClassName;
-			set { inheritedClassName = value; }
-		}
+        internal string Namespace;
+        internal string ClassName;
+        private string inheritedClassName = string.Empty;
+        internal string InheritedClassName
+        {
+            get => string.IsNullOrWhiteSpace(inheritedClassName)
+                         ? "[mscorlib]System.Object"
+                         : inheritedClassName;
+            set { inheritedClassName = value; }
+        }
         internal GenericModifier Modifier;
     }
 
-	public class ClassAST : ASTBase
-	{
+    public class ClassAST : ASTBase
+    {
         internal ClassPrototypeAST prototype;
-		internal List<FunctionAST> Functions = new List<FunctionAST>();
+        internal List<FunctionAST> Functions = new List<FunctionAST>();
 
         private string defaultCtorFormatTop =
         ".method public hidebysig specialname rtspecialname instance void\n" +
@@ -34,33 +34,33 @@ namespace RevnCompiler.ASTs
             "ret\n" +
         "}\n";
 
-		public override string GenerateIL()
-		{
-			bool hasCtor = false;
+        public override string GenerateIL()
+        {
+            bool hasCtor = false;
 
-			string internalCode = string.Empty;
-			foreach (var function in Functions)
-			{
-				internalCode += function.GenerateIL();
+            string internalCode = string.Empty;
+            foreach (var function in Functions)
+            {
+                internalCode += function.GenerateIL();
                 if (function.Prototype.FunctionName == prototype.ClassName)
-				{
-					hasCtor = true;
-				}
-			}
+                {
+                    hasCtor = true;
+                }
+            }
 
-			return
+            return
                 $".class {prototype.Modifier.Accessibility.ToString().ToLower()} auto ansi beforefieldinit\n" +
-					$"{prototype.Namespace}.{prototype.ClassName}\n" +
-						$"extends {prototype.InheritedClassName}\n" +
-				"{\n" +
-					internalCode + "\n" +
+                    $"{prototype.Namespace}.{prototype.ClassName}\n" +
+                        $"extends {prototype.InheritedClassName}\n" +
+                "{\n" +
+                    internalCode + "\n" +
                     (hasCtor ? "" : GetDefaultCtor()) + "\n" +
-				"}\n";
-		}
+                "}\n";
+        }
 
         private string GetDefaultCtor()
         {
             return defaultCtorFormatTop + prototype.InheritedClassName + defaultCtorFormatBottom;
         }
-	}
+    }
 }

@@ -51,8 +51,8 @@ namespace RevnCompiler.ParserHelpers
                     return intVal;
                 case TokenType.FloatingPoint:
                     var floatVal = new FloatLiteralAST(parser.LastToken.Value);
-					parser.ProceedToken(); // 数字を消費
-					return floatVal;
+                    parser.ProceedToken(); // 数字を消費
+                    return floatVal;
                 default:
                     throw new NotImplementedException();
             }
@@ -144,8 +144,8 @@ namespace RevnCompiler.ParserHelpers
             var args = new List<ExpressionAST>();
             if(parser.LastToken.TokenType != TokenType.RParen)
             {
-				while (true)
-				{
+                while (true)
+                {
                     var arg = GenerateExpressionAST();
                     args.Add(arg);
 
@@ -157,7 +157,7 @@ namespace RevnCompiler.ParserHelpers
                         RevnException.ThrowParserException("Expected comma or )", parser.LastToken);
                     }
                     parser.ProceedToken(); // , を消費
-				}
+                }
             }
 
             parser.ProceedToken(); // ) を消費

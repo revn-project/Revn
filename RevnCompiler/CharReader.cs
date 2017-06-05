@@ -6,7 +6,7 @@
         char currentChar = ' ';
         int currentIndex;
 
-		internal char CurrentChar => currentChar;
+        internal char CurrentChar => currentChar;
         internal int CurrentIndex => currentIndex;
         internal bool HasNext => currentIndex < Input.Length;
 

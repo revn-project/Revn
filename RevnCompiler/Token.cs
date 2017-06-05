@@ -1,11 +1,11 @@
 ﻿namespace RevnCompiler
 {
-	public enum TokenType
-	{
-		Identifier,
+    public enum TokenType
+    {
+        Identifier,
         Integer,
         FloatingPoint,
-		Predefined,
+        Predefined,
         Operand,
 
         Using,
@@ -33,19 +33,19 @@
 
         StringLiteral,
         Number,
-	}
+    }
 
-	public class Token
-	{
+    public class Token
+    {
         public TokenType TokenType { get; }
-		public string Value { get; }
-		public int LineNumber { get; }
+        public string Value { get; }
+        public int LineNumber { get; }
 
-		internal Token(TokenType tokenType, string val, int lineNumber)
-		{
-			TokenType = tokenType;
-			Value = val;
-			LineNumber = lineNumber;
-		}
-	}
+        internal Token(TokenType tokenType, string val, int lineNumber)
+        {
+            TokenType = tokenType;
+            Value = val;
+            LineNumber = lineNumber;
+        }
+    }
 }

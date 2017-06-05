@@ -55,7 +55,7 @@ namespace RevnCompiler
             }
 
             if (char.IsLetter(LastChar)) // identifier: [a-zA-Z][a-zA-Z0-9]*
-			{
+            {
                 string tokenString = LastChar.ToString();
                 while(char.IsLetterOrDigit(LastChar = Reader.GetNext()))
                 {
@@ -83,8 +83,8 @@ namespace RevnCompiler
                         return new Token(TokenType.Fun, tokenString, lineNumber);
                     case "val":
                         return new Token(TokenType.Val, "val", lineNumber);
-					case "var":
-						return new Token(TokenType.Var, "var", lineNumber);
+                    case "var":
+                        return new Token(TokenType.Var, "var", lineNumber);
                     default:
                         return new Token(TokenType.Identifier, tokenString, lineNumber);
                 }
@@ -110,8 +110,8 @@ namespace RevnCompiler
             switch(LastChar)
             {
                 case ':':
-	                LastChar = Reader.GetNext(); // : を消費
-	                return new Token(TokenType.BlockStartOrColon, ":", lineNumber);
+                    LastChar = Reader.GetNext(); // : を消費
+                    return new Token(TokenType.BlockStartOrColon, ":", lineNumber);
                 case '(':
                     LastChar = Reader.GetNext(); // ( を消費
                     return new Token(TokenType.LParen, "(", lineNumber);
@@ -119,11 +119,11 @@ namespace RevnCompiler
                     LastChar = Reader.GetNext(); // ) を消費
                     return new Token(TokenType.RParen, ")", lineNumber);
                 case '[':
-					LastChar = Reader.GetNext(); // [ を消費
+                    LastChar = Reader.GetNext(); // [ を消費
                     return new Token(TokenType.LBracket, "[", lineNumber);
-				case ']':
-					LastChar = Reader.GetNext(); // ] を消費
-					return new Token(TokenType.RBracket, "]", lineNumber);
+                case ']':
+                    LastChar = Reader.GetNext(); // ] を消費
+                    return new Token(TokenType.RBracket, "]", lineNumber);
                 case '.':
                     LastChar = Reader.GetNext(); // . を消費
                     return new Token(TokenType.Period, ".", lineNumber);
@@ -134,7 +134,7 @@ namespace RevnCompiler
                     LastChar = Reader.GetNext(); // , を消費
                     return new Token(TokenType.Comma, ",", lineNumber);
                 case '=':
-					LastChar = Reader.GetNext(); // , を消費
+                    LastChar = Reader.GetNext(); // , を消費
                     return new Token(TokenType.Equals, "=", lineNumber);
                 case '/':
                     if ( Reader.Peek() == '/' )
