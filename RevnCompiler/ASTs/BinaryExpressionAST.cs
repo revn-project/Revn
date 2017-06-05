@@ -26,6 +26,7 @@ namespace RevnCompiler.ASTs
                 case "-": operatorIL = "sub"; break;
                 case "*": operatorIL = "mul"; break;
                 case "/": operatorIL = "div"; break;
+                case "%": operatorIL = "rem"; break;
                 default: throw new NotImplementedException();
             }
             operatorIL += "\n";

@@ -15,6 +15,7 @@ namespace RevnCompiler.ParserHelpers
             {"*", 40},
             {"=", 100}
         };
+
         private readonly Parser parser;
         private readonly FunctionASTGenerator functionGenerator;
         private int localVariableIndex;
@@ -82,7 +83,7 @@ namespace RevnCompiler.ParserHelpers
             {
                 if(variable.ReturnType == null)
                 {
-                    throw new Exception($"Variable {variable.Name} must have a type.");
+                    RevnException.ThrowParserException($"Variable {variable.Name} must have a type.", parser.LastToken);
                 }
                 functionGenerator.AddVariable(variable);
                 return variable;
@@ -113,11 +114,7 @@ namespace RevnCompiler.ParserHelpers
             while(parser.LastToken.TokenType == TokenType.Period)
             {
                 parser.ProceedToken(); // . を消費
-                if(parser.LastToken.TokenType != TokenType.Identifier)
-                {
-                    // TODO New Exception
-                    throw new NotImplementedException();
-                }
+                Assert.AssertTypeMatch(parser.LastToken, TokenType.Identifier);
                 identifier += "." + parser.LastToken.Value;
                 parser.ProceedToken(); // 変数を消費
             }
@@ -126,8 +123,7 @@ namespace RevnCompiler.ParserHelpers
             {
                 if (!functionGenerator.HasLocalVariable(identifier))
                 {
-					// TODO Parser exception
-					throw new Exception("Variable is not assigned.");
+                    RevnException.ThrowParserException("Variable is not assigned.", parser.LastToken);
                 }
 
                 string type = functionGenerator.GetVariable(identifier).ReturnType;
@@ -159,8 +155,7 @@ namespace RevnCompiler.ParserHelpers
 
                     if (parser.LastToken.TokenType != TokenType.Comma)
                     {
-                        // TODO excpetion
-                        throw new Exception("Expected comma or )");
+                        RevnException.ThrowParserException("Expected comma or )", parser.LastToken);
                     }
                     parser.ProceedToken(); // , を消費
 				}

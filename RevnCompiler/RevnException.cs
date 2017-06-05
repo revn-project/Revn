@@ -8,7 +8,12 @@ namespace RevnCompiler
     {
         internal static void ThrowParserException( string message, Token token )
         {
-            throw new Exception($"[{token?.LineNumber+1}:{token?.Value}] {message}");
+            throw new RevnParserException($"[{token?.LineNumber+1}:{token?.Value}] {message}");
         }
+    }
+
+    internal class RevnParserException : Exception
+    {
+        internal RevnParserException(string message) : base(message){}
     }
 }
