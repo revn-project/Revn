@@ -48,11 +48,12 @@ namespace RevnCompiler.ParserHelpers
 
 		private FunctionPrototype GenerateFunctionPrototype(GenericModifier modifier)
 		{
+            Assert.AssertTypeMatch( parser.LastToken, TokenType.Fun );
 			var prototype = new FunctionPrototype();
 			prototype.Modifier = modifier;
-
 			parser.ProceedToken(); // fun を消費
 
+            Assert.AssertTypeMatch( parser.LastToken, TokenType.Identifier );
 			prototype.FunctionName = parser.LastToken.Value;
 			parser.ProceedToken(); // 関数名を消費
 
@@ -67,6 +68,8 @@ namespace RevnCompiler.ParserHelpers
 
 		private List<Argument> GenerateArgs()
 		{
+            Assert.AssertTypeMatch( parser.LastToken, TokenType.LParen );
+
 			var args = new List<Argument>();
 
 			Argument arg = new Argument();
@@ -80,8 +83,7 @@ namespace RevnCompiler.ParserHelpers
 
 				if (parser.LastToken.TokenType != TokenType.BlockStartOrColon)
 				{
-					// TODO: 行数とか出したい
-					throw new Exception("Excpected ':'");
+                    RevnException.ThrowParserException("Excpected ':'", parser.LastToken);
 				}
 				parser.ProceedToken(); // : を消費
 

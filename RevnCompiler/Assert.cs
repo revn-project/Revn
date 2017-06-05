@@ -7,8 +7,7 @@ namespace RevnCompiler
         {
             if(token.TokenType != tokenType)
             {
-                // TODO propper exception
-                throw new Exception();
+                RevnException.ThrowParserException( $"{tokenType} expected", token );
             }
         }
     }

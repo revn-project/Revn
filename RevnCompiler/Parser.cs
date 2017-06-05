@@ -49,9 +49,9 @@ namespace RevnCompiler
                         continue;
                 }
 
-                var modifier = modifierGenerator.GenerateModifier();
-                var prototype = GenerateClassPrototype(modifier);
-                var classAst = GenerateClassAST(prototype);
+                GenericModifier modifier = modifierGenerator.GenerateModifier();
+                ClassPrototypeAST prototype = GenerateClassPrototype(modifier);
+                ClassAST classAst = GenerateClassAST(prototype);
 
                 asts.Add(classAst);
 

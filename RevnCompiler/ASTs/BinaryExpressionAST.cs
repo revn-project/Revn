@@ -14,6 +14,7 @@ namespace RevnCompiler.ASTs
             this.LHS = LHS;
             this.RHS = RHS;
             this._operator = _operator;
+            ReturnType = LHS.ReturnType;
         }
 
         public override string GenerateIL()
@@ -22,7 +23,9 @@ namespace RevnCompiler.ASTs
             switch(_operator)
             {
                 case "+": operatorIL = "add"; break;
+                case "-": operatorIL = "sub"; break;
                 case "*": operatorIL = "mul"; break;
+                case "/": operatorIL = "div"; break;
                 default: throw new NotImplementedException();
             }
             operatorIL += "\n";

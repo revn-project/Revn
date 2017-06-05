@@ -1,9 +1,12 @@
 ﻿using System
+
 namespace Revn:
     class Program:
-        public static fun Main(args : String[]):
-            val x = 10
-			Console.WriteLine(x)
+        public static fun Main (args : String[]):
+			// Hogefugafuga
+            val x = 10 + 30
+			val y = 20
+			Console.WriteLine(x + 30)
         end
     end
 end

@@ -7,6 +7,7 @@ namespace RevnCompiler
         Integer,
         FloatingPoint,
 		Predefined,
+        Operand,
 
         Using,
         Namespace,
@@ -26,10 +27,10 @@ namespace RevnCompiler
         Var,
 
         Accessibility,
-
         Static,
 
         Fun,
+        Comment,
 
         StringLiteral,
         Number,

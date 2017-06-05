@@ -46,10 +46,11 @@ namespace RevnCompiler.ASTs
             string variableString = string.Empty;
             foreach(var variable in Variables)
             {
-                variableString += $"[{variable.Index}] {variable.ReturnType} {variable.Name}\n";
+                variableString += $"[{variable.Index}] {variable.ReturnType} {variable.Name},\n";
             }
+		    variableString = variableString.Substring(0, variableString.Length - 2) + "\n"; // , を削除
 
-			return
+            return
                 $".method {Prototype.Modifier.Accessibility.ToString().ToLower()} hidebysig {Prototype.Modifier.Static} void\n" +
 					$"{Prototype.FunctionName}(\n" +
 						argsCode +

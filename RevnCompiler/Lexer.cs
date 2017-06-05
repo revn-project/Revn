@@ -10,6 +10,8 @@ namespace RevnCompiler
         string SourceCode { get; }
         CharReader Reader { get; }
 
+        private static readonly string[] operands = {"+", "-", "*", "/"};
+
         int lineNumber;
         char lastChar = ' ';
         char LastChar
@@ -97,7 +99,7 @@ namespace RevnCompiler
                 {
                     if (LastChar == '.') 
                     {
-                        if (isFloat) throw new Exception("Another deciaml.");
+                        if (isFloat) throw new Exception("Double decimal.");
                         isFloat = true;
                     }
                     tokenString += LastChar.ToString();
@@ -135,6 +137,24 @@ namespace RevnCompiler
                 case '=':
 					LastChar = Reader.GetNext(); // , を消費
                     return new Token(TokenType.Equals, "=", lineNumber);
+                case '/':
+                    if ( Reader.Peek() == '/' )
+                    {
+                        while ( LastChar != '\n' )
+                        {
+                            LastChar = Reader.GetNext();
+                        }
+                        LastChar = Reader.GetNext(); // \n を消費
+                        return GetToken();
+                    }
+                    break;
+            }
+
+            if ( operands.Contains( LastChar.ToString() ) )
+            {
+                var operand = new Token( TokenType.Operand, LastChar.ToString(), lineNumber );
+                LastChar = Reader.GetNext();
+                return operand;
             }
 
             // 終了

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -24,7 +25,17 @@ namespace Revn
             }
 
             Parser parser = new Parser(tokens);
-            var result = parser.Parse();
+            IEnumerable<ASTBase> result;
+            try
+            {
+                result = parser.Parse();
+            }
+            catch ( Exception e )
+            {
+                Console.WriteLine(e);
+                Console.ReadLine();
+                return;
+            }
             var ilPath = Path.Combine( location, "HelloWorld.il" );
             FileStream file = File.Create(ilPath);
             using ( var writer = new StreamWriter( file ) )
@@ -44,13 +55,16 @@ namespace Revn
                     StartInfo =
                     {
                         FileName = Environment.GetEnvironmentVariable( "ComSpec" ),
-                        CreateNoWindow = true,
                         Arguments = $"/c ilasm \"{ilPath}\""
                     }
                 };
             commandProcess.Start();
             commandProcess.WaitForExit();
 
+            if(commandProcess.ExitCode != 0) return;
+
+            Console.WriteLine();
+            Console.WriteLine("=======================================");
             Console.WriteLine("Execution Result");
             Console.WriteLine("=======================================");
 

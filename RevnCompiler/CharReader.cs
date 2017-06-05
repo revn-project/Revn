@@ -36,6 +36,13 @@ namespace RevnCompiler
             }
         }
 
+        internal char Peek()
+        {
+            return currentIndex + 1 < Input.Length 
+                ? Input[currentIndex]
+                : '\0';
+        }
+
         internal void ResetLocalIndex()
         {
             localIndex = 0;
