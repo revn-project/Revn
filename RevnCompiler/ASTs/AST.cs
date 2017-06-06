@@ -1,9 +1,6 @@
-﻿﻿using System;
-using System.Collections.Generic;
-
-namespace RevnCompiler
+﻿namespace RevnCompiler
 {
-    interface ILGenerator
+    internal interface ILGenerator
     {
         string GenerateIL();
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using RevnCompiler.ASTs;
 using RevnCompiler.ParserHelpers;
 
@@ -8,54 +7,53 @@ namespace RevnCompiler
 {
     public class Parser
     {
-        TokenReader tokenReader { get; }
+        private readonly TokenReader _tokenReader;
 
-        Token lastToken;
-        public Token LastToken { get => lastToken; }
+        public Token LastToken { get; private set; }
 
-        string currentNamespace = string.Empty;
-        List<string> usings = new List<string>();
+        private string _currentNamespace = string.Empty;
+        private readonly List<string> _usings = new List<string>();
 
         // helpers
-        readonly IModifierGenerator modifierGenerator;
-        readonly IFunctionASTGenerator functionAstGenerator;
+        private readonly IModifierGenerator _modifierGenerator;
+        private readonly IFunctionASTGenerator _functionAstGenerator;
 
         public Parser(IEnumerable<Token> tokens)
         {
-            tokenReader = new TokenReader(tokens);
+            _tokenReader = new TokenReader(tokens);
 
-            modifierGenerator = new ModifierGenerator(this);
-            functionAstGenerator = new FunctionASTGenerator(this, modifierGenerator);
+            _modifierGenerator = new ModifierGenerator(this);
+            _functionAstGenerator = new FunctionASTGenerator(this, _modifierGenerator);
         }
 
         public IEnumerable<ASTBase> Parse()
         {
             var asts = new List<ASTBase>();
 
-            while(tokenReader.HasNext)
+            while(_tokenReader.HasNext)
             {
-                ProceedToken();
+                this.ProceedToken();
 
-                switch(lastToken.TokenType)
+                switch(this.LastToken.TokenType)
                 {
                     case TokenType.Using:
-                        ProceedToken(); // using をスキップ
-                        usings.Add(lastToken.Value);
+                        this.ProceedToken(); // using をスキップ
+                        _usings.Add(this.LastToken.Value);
                         continue;
                     case TokenType.Namespace:
-                        ProceedToken(); // namespace をスキップ
-                        currentNamespace = lastToken.Value;
-                        ProceedToken(); // : を消費すように一個ずらす
+                        this.ProceedToken(); // namespace をスキップ
+                        _currentNamespace = this.LastToken.Value;
+                        this.ProceedToken(); // : を消費すように一個ずらす
                         continue;
                 }
 
-                GenericModifier modifier = modifierGenerator.GenerateModifier();
-                ClassPrototypeAST prototype = GenerateClassPrototype(modifier);
-                ClassAST classAst = GenerateClassAST(prototype);
+                GenericModifier modifier = _modifierGenerator.GenerateModifier();
+                ClassPrototypeAST prototype = this.GenerateClassPrototype(modifier);
+                ClassAST classAst = this.GenerateClassAST(prototype);
 
                 asts.Add(classAst);
 
-                if (LastToken.TokenType == TokenType.BlockEnd) break;
+                if (this.LastToken.TokenType == TokenType.BlockEnd) break;
             }
 
             return asts;
@@ -63,43 +61,44 @@ namespace RevnCompiler
 
         internal Token ProceedToken()
         {
-            lastToken = tokenReader.GetNext();
-            return lastToken;
+            this.LastToken = this._tokenReader.GetNext();
+            return this.LastToken;
         }
 
         #region Class Prototype
 
         private ClassPrototypeAST GenerateClassPrototype(GenericModifier modifier)
         {
-            var prototype = new ClassPrototypeAST();
+            var prototype = new ClassPrototypeAST
+            {
+                Modifier = modifier,
+                Namespace = _currentNamespace
+            };
 
-            prototype.Modifier = modifier;
-            prototype.Namespace = currentNamespace;
 
-            ProceedToken(); // class を消費
+            this.ProceedToken(); // class を消費
 
-            prototype.ClassName = lastToken.Value;
-            ProceedToken(); // クラス名を消費
+            prototype.ClassName = this.LastToken.Value;
+            this.ProceedToken(); // クラス名を消費
 
             // TODO inheritence
 
-            ProceedToken(); // :を消費
+            this.ProceedToken(); // :を消費
 
             return prototype;
         }
 
         #endregion
 
-        internal ClassAST GenerateClassAST(ClassPrototypeAST prototype)
+        private ClassAST GenerateClassAST(ClassPrototypeAST prototype)
         {
-            var classAst = new ClassAST();
-            classAst.prototype = prototype;
+            var classAst = new ClassAST {prototype = prototype};
 
             // 関数系をパース
             var functions = new List<FunctionAST>();
-            while (lastToken.TokenType != TokenType.BlockEnd)
+            while (this.LastToken.TokenType != TokenType.BlockEnd)
             {
-                functions.Add(functionAstGenerator.GenerateFunctionAST());
+                functions.Add(_functionAstGenerator.GenerateFunctionAST());
             }
             classAst.Functions = functions;
 
