@@ -14,7 +14,7 @@ namespace Revn:
     class Program:
         public static fun Main(args : String[]):
             val x = 10
-			Console.WriteLine(x)
+            Console.WriteLine(x)
         end
     end
 end
